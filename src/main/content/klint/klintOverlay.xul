@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE overlay SYSTEM "chrome://klint/locale/klint.dtd" >
+<?xml-stylesheet href="chrome://klint/skin/klint.css" type="text/css"?>
+
+<overlay id="klintOverlay"
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+  <script type="application/x-javascript"
+          src="chrome://klint/content/common.js" />
+  <script type="application/x-javascript"
+          src="chrome://klint/content/klintTreeview.js" />
+  <script type="application/x-javascript"
+          src="chrome://klint/content/klintOverlay.js" />
+
+    <menupopup id="menu_view_tabs_popup">
+        <menuitem id="show_klint_tab2"
+            observes="show_klint_tab"
+            class="menuitem-iconic-wide"
+            oncommand="ko.uilayout.ensureTabShown('klint_tab', true)"
+            label="&klint.tab.title;"
+            />
+    </menupopup>
+
+    <menupopup id="context_lint">
+        <menuitem id="show_klint_tab"
+            oncommand="ko.uilayout.ensureTabShown('klint_tab', true)"
+            label="&klint.open.tab.title;"
+            />
+    </menupopup>
+
+    <tabs id="output_tabs">
+        <!-- From Todo extensio: Need both onmousedown and onfocus to catch selection
+             by mouse and Ctrl[+Shift]+Tab -->
+        <tab id="klint_tab"
+             label="&klint.tab.title;"
+             onmousedown="document.getElementById('klint-treechildren').focus();"
+             onfocus="document.getElementById('klint-treechildren').focus();" />
+    </tabs>
+
+    <tabpanels id="output_tabpanels">
+        <tabpanel id="klint_tabpanel"
+                  orient="vertical"
+                  flex="1">
+
+            <toolbox>
+                <toolbar id="klint-toolbar" class="chromeclass-toolbar">
+                    <button image="chrome://klint/skin/icon_check_error.png" value="errors"/>
+                    <toolbarseparator/>
+                    <image src="chrome://klint/skin/icon_check_warning.png"  />
+                    <label value="warnings" class="button-warning"/>
+                    <toolbarseparator/>
+                    <image src="chrome://klint/skin/icon_check_info.png" />
+                    <label value="messages" class="button-message"/>
+                    <toolbarseparator/>
+                    <toolbarbutton id="klint-button-refresh" label="refresh" class="button-error"/>
+                </toolbar>
+            </toolbox>
+
+            <vbox flex="1">
+
+
+                <hbox align="center">
+                    <label id="klint-count" value=""/>
+                    <button id="klint-refresh"
+                            label="&klint.refresh.label;"
+                            oncommand="ko.lint.doRequest();"/>
+                    <!--<button id="testLabel" label="show dialog" oncommand="gKlint.openDialog()" />-->
+                </hbox>
+            <tree id="klint-tree"
+                  flex="1"
+                  seltype="single">
+                <treecols>
+                    <treecol primary="true"
+                             id="klint-linenum"
+                             style="min-width: 8em;"
+                             label="&klint.line.number.label;"
+                             persist="width"/>
+                    <splitter class="tree-splitter" />
+                    <treecol id="klint-messageType"
+                             label="&klint.message.type.label;" />
+                    <splitter class="tree-splitter" />
+                    <treecol id="klint-message"
+                             flex="1"
+                             label="&klint.message.text.label;"
+                             persist="width" />
+                </treecols>
+                <treechildren id="klint-treechildren"
+                              flex="1"
+                              ondblclick="gKlint.onDblClick(event);"/>
+            </tree>
+            </vbox>
+        </tabpanel>
+    </tabpanels>
+    
+</overlay>
+   

@@ -1,0 +1,6 @@
+<!ENTITY klint.tab.title "Syntax checking status">
+<!ENTITY klint.open.tab.title "Open messages tab">
+<!ENTITY klint.refresh.label "Refresh">
+<!ENTITY klint.line.number.label "Line Number">
+<!ENTITY klint.message.text.label "Message Text">
+<!ENTITY klint.message.type.label "Type">

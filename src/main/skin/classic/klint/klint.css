@@ -1,0 +1,12 @@
+.button-error {
+  list-style-image: url("chrome://klint/skin/icon_check_error.png");
+  display: block;
+}
+
+.button-warning {
+  list-style-image: url("chrome://klint/skin/icon_check_warning.png");
+}
+
+.button-info {
+  list-style-image: url("chrome://klint/skin/icon_check_info.png");
+}
