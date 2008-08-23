@@ -37,11 +37,12 @@
 var gKlint = {
     onLoad : function() {
         try {
-            gKlint.initControls();
+            this.initControls();
 
             var obs = CommonUtil.getObserverService();
             obs.addObserver(gKlint, "current_view_changed", false);
             obs.addObserver(gKlint, "current_view_check_status", false);
+            this.addListeners();
             sizeToContent();
         } catch (err) {
             alert("klint onLoad " + err);
@@ -49,17 +50,17 @@ var gKlint = {
     },
 
     initControls : function() {
-        gKlint.oLintTree = document.getElementById("klint-tree");
-        gKlint.oCount = document.getElementById("klint-count");
+        this.oLintTree = document.getElementById("klint-tree");
+        this.oCount = document.getElementById("klint-count");
 
-        gKlint.initValues();
+        this.initValues();
     },
 
     initValues : function() {
-        gKlint.lintTreeView = new KlintTreeView();
+        this.lintTreeView = new KlintTreeView();
 
-        gKlint.oLintTree.view = gKlint.lintTreeView;
-        gKlint.lintTreeView.refresh();
+        this.oLintTree.view = this.lintTreeView;
+        this.lintTreeView.refresh();
     },
 
     _fillLintTree : function (view) {
@@ -86,9 +87,9 @@ var gKlint = {
                     numErrs = results.getNumErrors();
                     numWarns = results.getNumWarnings();
                     // There are results, each one is a koILintResult xpcom object
-                    //alert(gKlint.lintTreeView._resultsObj.length);
+                    //alert(this.lintTreeView._resultsObj.length);
                     //for (var i = 0; i < numResultsObj.value; i++) {
-                    //    gKlint.lintTreeView._resultsObj.push(resultsObj.value[i].description);
+                    //    this.lintTreeView._resultsObj.push(resultsObj.value[i].description);
                     //}
                 } else {
                     // No lint results here.
@@ -96,8 +97,8 @@ var gKlint = {
             } else {
                 // Linting is in progess
             }
-            gKlint.lintTreeView.setResultsObj(items, count);
-            gKlint.oCount.value = CommonUtil.getFormattedMessage("error.count.label",
+            this.lintTreeView.setResultsObj(items, count);
+            this.oCount.value = CommonUtil.getFormattedMessage("error.count.label",
                                                                 [numErrs, numWarns]);
         }
         } catch (err) {
@@ -108,11 +109,11 @@ var gKlint = {
     onDblClick : function(event) {
         try {
         if (event.button == 0) {
-            var view = gKlint.oLintTree.view;
+            var view = this.oLintTree.view;
             var selection = view.selection;
             if (selection.count) {
-                gKlint.moveCursorToMessage(ko.views.manager.currentView,
-                                           gKlint.lintTreeView.selectedItem);
+                this.moveCursorToMessage(ko.views.manager.currentView,
+                                           this.lintTreeView.selectedItem);
                 ko.views.manager.currentView.setFocus();
             }
         }
@@ -142,23 +143,57 @@ var gKlint = {
         var obs = CommonUtil.getObserverService();
         obs.removeObserver(gKlint, "current_view_changed");
         obs.removeObserver(gKlint, "current_view_check_status");
+        this.removeListeners();
     },
 
     observe : function(subject, topic, data) {
         try {
         switch (topic) {
             case "current_view_changed":
-                gKlint._fillLintTree(subject);
+                this._fillLintTree(subject);
                 break;
             case "current_view_check_status":
-                gKlint._fillLintTree(ko.views.manager.currentView);
+                this._fillLintTree(ko.views.manager.currentView);
                 break;
         }
         } catch (err) {
 //            alert(topic + "--" + data + "\n" + err);
         }
+    },
+
+    addListeners : function() {
+        var self = this;
+
+        this.handle_current_view_changed_setup = function(event) {
+            self.onCurrentViewChanged(event);
+        };
+        this.handle_current_view_check_status_setup = function(event) {
+            self.onCurrentViewCheckStatus(event);
+        };
+
+        window.addEventListener('current_view_changed',
+                                this.handle_current_view_changed_setup, false);
+        window.addEventListener('current_view_check_status',
+                                this.handle_current_view_check_status_setup, false);
+    },
+
+    removeListeners : function() {
+        window.removeEventListener('current_view_changed',
+                                this.handle_current_view_changed_setup, false);
+        window.removeEventListener('current_view_check_status',
+                                this.handle_current_view_check_status_setup, false);
+    },
+
+    onCurrentViewChanged : function(event) {
+        var currView = event.originalTarget;
+
+        this._fillLintTree(currView);
+    },
+
+    onCurrentViewCheckStatus : function(event) {
+        this._fillLintTree(ko.views.manager.currentView);
     }
 };
 
-window.addEventListener("load", gKlint.onLoad, false);
-window.addEventListener("unload", gKlint.onUnLoad, false);
+window.addEventListener("load", function(event) {gKlint.onLoad(event);}, false);
+window.addEventListener("unload", function(event) {gKlint.onUnLoad(event);}, false);
