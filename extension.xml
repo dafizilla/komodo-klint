@@ -1,5 +1,5 @@
 <!DOCTYPE extension [
-<!ENTITY extension.version "1.1">
+<!ENTITY extension.version "1.1.1">
 ]>
 
 <extension name="klint">
@@ -32,7 +32,7 @@
 
     <locales>
         <locale pos="1" code="en-US" />
-        <locale pos="2" code="it-IT" />
+        <!--<locale pos="2" code="it-IT" />-->
     </locales>
 
     <styles>
@@ -47,21 +47,14 @@
             <description>Komodo IDE</description>
             <id>{36E66FA0-F259-11D9-850E-000D935D3368}</id>
             <minVersion>4.2</minVersion>
-            <maxVersion>4.3.*</maxVersion>
+            <maxVersion>5.*</maxVersion>
         </application>
         
         <application>
             <description>Komodo Edit</description>
             <id>{b1042fb5-9e9c-11db-b107-000d935d3368}</id>
             <minVersion>4.0</minVersion>
-            <maxVersion>4.*</maxVersion>
-        </application>
-    
-        <application>
-            <description>OpenKomodo</description>
-            <id>{2cb9d397-8ec9-4211-bd89-7fea34120af6}</id>
-            <minVersion>0</minVersion>
-            <maxVersion>1.*</maxVersion>
+            <maxVersion>5.*</maxVersion>
         </application>
     </compatibility>
 
