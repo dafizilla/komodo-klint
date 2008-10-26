@@ -74,7 +74,7 @@ CommonUtil.getFormattedMessage = function(msg, ar) {
 CommonUtil.makeFilePicker = function(win, title, mode, displayDirectory) {
     const nsIFilePicker                 = Components.interfaces.nsIFilePicker;
     const CONTRACTID_FILE_PICKER        = "@mozilla.org/filepicker;1";
-    
+
     if (mode == null || mode == undefined) {
         mode = nsIFilePicker.modeOpen;
     }
@@ -84,7 +84,7 @@ CommonUtil.makeFilePicker = function(win, title, mode, displayDirectory) {
     if (displayDirectory) {
         fp.displayDirectory = displayDirectory;
     }
-    
+
     return fp;
 }
 
@@ -112,7 +112,7 @@ CommonUtil.makeFileURL = function(aFile) {
     return ioService.newFileURI(theFile);
 }
 
-    
+
 CommonUtil.copyToClipboard = function(str) {
     Components.classes["@mozilla.org/widget/clipboardhelper;1"]
         .getService(Components.interfaces.nsIClipboardHelper)
@@ -133,7 +133,7 @@ CommonUtil.renameFile = function(uri, newName) {
     var koFileEx = CommonUtil.makeIFileExFromURI(uri);
     var oldPath = koFileEx.path;
     var newPath;
-    
+
     if (koFileEx.isRemoteFile) {
         var rcSvc = Components
                     .classes["@activestate.com/koRemoteConnectionService;1"]
@@ -148,7 +148,7 @@ CommonUtil.renameFile = function(uri, newName) {
         newPath = CommonUtil.makeLocalFile(oldLocalFile.parent, [newName]).path;
         oldLocalFile.moveTo(null, newName);
     }
-    
+
     return newPath;
 }
 
@@ -188,7 +188,7 @@ CommonUtil.makeIFileExFromURI = function (uri) {
                     .classes["@activestate.com/koFileEx;1"]
                     .createInstance(Components.interfaces.koIFileEx);
     file.path = uri;
-    
+
     return file;
 }
 
@@ -197,7 +197,7 @@ CommonUtil.clone = function(obj, shallow) {
         return obj;
     }
     var cloned = {};
-    
+
     for(var i in obj) {
         if (shallow) {
             cloned[i] = obj[i];

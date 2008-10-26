@@ -4,3 +4,9 @@
 <!ENTITY klint.line.number.label "Line Number">
 <!ENTITY klint.message.text.label "Message Text">
 <!ENTITY klint.message.type.label "Type">
+
+<!ENTITY klint.show.all.label "Show All">
+<!ENTITY klint.show.errors.label "Errors">
+<!ENTITY klint.show.warnings.label "Warnings">
+<!ENTITY klint.show.infos.label "Info">
+<!ENTITY klint.show.hide.all.label "Hide All">

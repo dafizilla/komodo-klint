@@ -1,16 +1,18 @@
-.button-error {
-  list-style-image: url("chrome://klint/skin/icon_check_error.png");
-  display: block;
+.button-klint-refresh {
+  list-style-image: url("chrome://klint/skin/refresh.png");
 }
 
-.button-warning {
+.klintTreeChildren::-moz-tree-image(error) {
+  width: 20px;
+  list-style-image: url("chrome://klint/skin/icon_check_error.png");
+}
+
+.klintTreeChildren::-moz-tree-image(warning) {
+  width: 20px;
   list-style-image: url("chrome://klint/skin/icon_check_warning.png");
 }
 
-.button-info {
+.klintTreeChildren::-moz-tree-image(info) {
+  width: 20px;
   list-style-image: url("chrome://klint/skin/icon_check_info.png");
-}
-
-.button-klint-refresh {
-  list-style-image: url("chrome://klint/skin/refresh.png");
 }
