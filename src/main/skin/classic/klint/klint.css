@@ -3,16 +3,16 @@
 }
 
 .klintTreeChildren::-moz-tree-image(error) {
-  width: 20px;
+  padding-right: 4px;
   list-style-image: url("chrome://klint/skin/icon_check_error.png");
 }
 
 .klintTreeChildren::-moz-tree-image(warning) {
-  width: 20px;
+  padding-right: 4px;
   list-style-image: url("chrome://klint/skin/icon_check_warning.png");
 }
 
 .klintTreeChildren::-moz-tree-image(info) {
-  width: 20px;
+  padding-right: 4px;
   list-style-image: url("chrome://klint/skin/icon_check_info.png");
 }
