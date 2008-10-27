@@ -93,10 +93,9 @@ KlintInfo.prototype = {
         return this.sortInfo[columnName].isAscending;
     },
 
-    getSortInfo : function() {
+    getCurrentSortInfo : function() {
         return this.sortInfo[this.currentSortColumnName];
     }
-
 }
 
 function KlintTreeView() {
@@ -157,7 +156,7 @@ KlintTreeView.prototype = {
                 }
             }
             // sort at every new filter, very inefficient
-            this.sort(info.getSortInfo());
+            this.sort(info.getCurrentSortInfo());
         }
         var offsetCount = this._visibleItems.length - currentCount;
         this.treebox.rowCountChanged(this._visibleItems.length, offsetCount);
