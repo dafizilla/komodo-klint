@@ -71,8 +71,6 @@ var gKlint = {
         var numErrs = 0;
         var numWarns = 0;
 
-        this._updateFilterMenu(view);
-
         try {
         if (!view || typeof(view.lintBuffer) == "undefined" || !view.lintBuffer) {
             // No linting on this view.
@@ -139,12 +137,6 @@ var gKlint = {
         view.scimoz.selectionEnd = pos;
     },
 
-    openDialog : function() {
-        window.openDialog("chrome://klint/content/test.xul",
-                          "_blank",
-                          "chrome,resizable=yes,dependent=yes");
-    },
-
     onUnLoad : function() {
         var obs = CommonUtil.getObserverService();
         obs.removeObserver(this, "current_view_changed");
@@ -157,23 +149,25 @@ var gKlint = {
         try {
         switch (topic) {
             case "current_view_changed":
+                this._updateFilterMenu(subject);
+                this._updateSortIndicator(subject);
                 this._fillLintTree(subject);
                 break;
             case "current_view_check_status":
                 this._fillLintTree(ko.views.manager.currentView);
                 break;
             case "view_opened":
-                var view = subject;
-                ko.logging.getLogger("extensions.klint").warn("view is " + view);
-
-                if (view.document) {
-                    ko.logging.getLogger("extensions.klint").warn("document is " + document);
-                    ko.logging.getLogger("extensions.klint").warn("file " + view.document.file.ext);
-                    if (view.document.file.ext == ".log") {
-                        ko.logging.getLogger("extensions.klint").warn("check disabled");
-                        view.prefs.setBooleanPref("editUseLinting", false);
-                    }
-                }
+                //var view = subject;
+                //ko.logging.getLogger("extensions.klint").warn("view is " + view);
+                //
+                //if (view.document) {
+                //    ko.logging.getLogger("extensions.klint").warn("document is " + document);
+                //    ko.logging.getLogger("extensions.klint").warn("file " + view.document.file.ext);
+                //    if (view.document.file.ext == ".log") {
+                //        ko.logging.getLogger("extensions.klint").warn("check disabled");
+                //        view.prefs.setBooleanPref("editUseLinting", false);
+                //    }
+                //}
                 break;
         }
         } catch (err) {
@@ -207,11 +201,15 @@ var gKlint = {
                                 this.handle_current_view_changed_setup, false);
         window.removeEventListener('current_view_check_status',
                                 this.handle_current_view_check_status_setup, false);
+        window.removeEventListener('view_opened',
+                                this.handle_current_view_opened_setup, false);
     },
 
     onCurrentViewChanged : function(event) {
         var currView = event.originalTarget;
 
+        this._updateFilterMenu(currView);
+        this._updateSortIndicator(currView);
         this._fillLintTree(currView);
     },
 
@@ -233,24 +231,35 @@ var gKlint = {
         //}
     },
 
-    getKlintInfo : function() {
-        if (!("__klintInfo__" in ko.views.manager.currentView)) {
-            ko.views.manager.currentView.__klintInfo__ = new KlintInfo();
+    getKlintInfo : function(view) {
+        if (!("__klintInfo__" in view)) {
+            view.__klintInfo__ = new KlintInfo();
         }
-        return ko.views.manager.currentView.__klintInfo__;
+        return view.__klintInfo__;
     },
 
     filterVisibleItems : function(what) {
-        ko.views.manager.currentView.__klintInfo__ = this.getKlintInfo();
-        ko.views.manager.currentView.__klintInfo__.filter = what;
-        this.lintTreeView.filterVisibleItems(ko.views.manager.currentView.__klintInfo__);
+        view = ko.views.manager.currentView;
+        var klintInfo = this.getKlintInfo(view);
+        klintInfo.filter = what;
+        this.lintTreeView.filterVisibleItems(klintInfo);
         this.lintTreeView.refresh();
     },
 
     sort : function(event) {
         var selectedColumn = event.target;
-        var direction = this.getKlintInfo()
-            .changeSortColumn(selectedColumn.id) ? "ascending" : "descending";
+        view = ko.views.manager.currentView;
+        this.getKlintInfo(view).changeSortColumn(selectedColumn.id);
+        this._updateSortIndicator(ko.views.manager.currentView);
+        this.lintTreeView.sort(this.getKlintInfo(view).getCurrentSortInfo());
+        this.lintTreeView.refresh();
+    },
+    
+    _updateSortIndicator : function(view) {
+        var selectedColumn = document.getElementById(
+            this.getKlintInfo(view).currentSortColumnName);
+        var sortInfo = this.getKlintInfo(view).getCurrentSortInfo();
+        var sortDirection = sortInfo.isAscending ? "ascending" : "descending"
         var cols = this.oLintTree.columns;
 
         for (var i = 0; i < cols.count; i++) {
@@ -258,15 +267,13 @@ var gKlint = {
 
             if (el == selectedColumn) {
                 el.setAttribute("sortActive", "true");
-                el.setAttribute("sortDirection", direction);
+                el.setAttribute("sortDirection", sortDirection);
             } else {
                 el.removeAttribute("sortActive");
                 el.removeAttribute("sortDirection");
             }
         }
-        this.lintTreeView.sort(this.getKlintInfo().getSortInfo());
-        this.lintTreeView.refresh();
-    },
+    },        
 
     _updateFilterMenu : function (view) {
         var filter = KlintTreeView.ALL;
