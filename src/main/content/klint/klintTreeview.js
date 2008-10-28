@@ -35,66 +35,105 @@
 # ***** END LICENSE BLOCK *****
 */
 
-function KlintInfo(filter) {
-    if (typeof(filter) == "undefined" || filter == null) {
-        this.filter = KlintTreeView.ALL;
-    }
-    this.currentSortColumnName = "klint-linenum";
-    this.sortInfo = {};
+function KlintInfo(filterType) {
+    // use setter
+    this.filterType = filterType;
+    this._currentSortColumnName = "klint-linenum";
+    this._sortInfo = {};
+    this._filterPattern = "";
 
-    this.sortInfo["klint-linenum"] = { isAscending: true, sorter :
-                function(direction) {
-                    return function(a, b) {
-                        return direction * (a.lineStart - b.lineStart);
-                    }
+    this._sortInfo["klint-linenum"] = { isAscending: true,
+            sorter : function(direction) {
+                return function(a, b) {
+                    return direction * (a.lineStart - b.lineStart);
                 }
-            };
-    this.sortInfo["klint-messageType"] = { isAscending: true, sorter :
-                function(direction) {
-                    return function(a, b) {
-                        if (a.severity == b.severity) {
-                            return a.lineStart - b.lineStart;
+            }
+        };
+    this._sortInfo["klint-messageType"] = { isAscending: true,
+            sorter : function(direction) {
+                return function(a, b) {
+                    if (a.severity == b.severity) {
+                        return a.lineStart - b.lineStart;
+                    }
+                    return direction * (a.severity - b.severity);
+                }
+            }
+        };
+    this._sortInfo["klint-message"] = { isAscending: true,
+            sorter : function(direction) {
+                return function(a, b) {
+                    var cmp = a.description.toLowerCase()
+                              .localeCompare(b.description.toLowerCase());
+                    if (cmp == 0) {
+                        if (a.lineStart == b.lineStart) {
+                            return a.severity - b.severity;
                         }
-                        return direction * (a.severity - b.severity);
+                        return a.lineStart - b.lineStart;
                     }
+                    return direction * cmp;
                 }
-            };
-    this.sortInfo["klint-message"] = { isAscending: true, sorter :
-                function(direction) {
-                    return function(a, b) {
-                        var cmp = a.description.toLowerCase()
-                                  .localeCompare(b.description.toLowerCase());
-                        if (cmp == 0) {
-                            if (a.lineStart == b.lineStart) {
-                                return a.severity - b.severity;
-                            }
-                            return a.lineStart - b.lineStart;
-                        }
-                        return direction * cmp;
-                    }
-                }
-            };
+            }
+        };
 }
 
 KlintInfo.prototype = {
+    get filterType() {
+        return this._filterType;
+    },
+    
+    set filterType(value) {
+        if (typeof(value) == "undefined" || value == null) {
+            this._filterType = KlintTreeView.ALL;
+        } else {
+            this._filterType = value;
+        }
+    },
+    
+    get currentSortColumnName() {
+        return this._currentSortColumnName;
+    },
+    
+    get filterPattern() {
+        return this._filterPattern;
+    },
+    
+    set filterPattern(value) {
+        if (typeof(value) == "undefined" || value == null) {
+            this._filterPattern = "";
+        } else {
+            this._filterPattern = value.toLowerCase();
+        }
+    },
+    
     /**
      * Return true if column has been sorted ascending, false otherwise
      */
     changeSortColumn : function(columnName) {
-        if (this.currentSortColumnName == columnName) {
-            if (columnName in this.sortInfo) {
-                this.sortInfo[columnName].isAscending = !this.sortInfo[columnName].isAscending;
+        if (this._currentSortColumnName == columnName) {
+            if (columnName in this._sortInfo) {
+                this._sortInfo[columnName].isAscending = !this._sortInfo[columnName].isAscending;
             } else {
                 alert("Unable to find column '" + columnName + "'");
             }
         } else {
-            this.currentSortColumnName = columnName;
+            this._currentSortColumnName = columnName;
         }
-        return this.sortInfo[columnName].isAscending;
+        return this._sortInfo[columnName].isAscending;
     },
 
     getCurrentSortInfo : function() {
-        return this.sortInfo[this.currentSortColumnName];
+        return this._sortInfo[this._currentSortColumnName];
+    },
+    
+    isResultVisible : function(koILintResult) {
+        if (koILintResult.severity & this.filterType) {
+            var descr = koILintResult.description.toLowerCase();
+            // if this._filterPattern is empty indexOf returns 0
+            if (descr.indexOf(this._filterPattern) >= 0) {
+                return true;
+            }
+        }
+        return false;
     }
 }
 
@@ -147,11 +186,14 @@ KlintTreeView.prototype = {
     filterVisibleItems : function(info) {
         var currentCount = this._visibleItems.length;
         this._visibleItems = [];
+        if (typeof sortItems == "undefined" || sortItems == null) {
+            sortItems = true;
+        }
 
-        if (info.filter != KlintTreeView.NONE) {
+        if (info.filterType != KlintTreeView.NONE) {
             for (var i = 0; i < this._count; i++) {
                 var result = this._resultsObj.value[i];
-                if (result.severity & info.filter) {
+                if (info.isResultVisible(result)) {
                     this._visibleItems.push(result);
                 }
             }

@@ -51,9 +51,10 @@ var gKlint = {
     },
 
     initControls : function() {
-        this.oLintTree = document.getElementById("klint-tree");
-        this.oCount = document.getElementById("klint-count");
-        this.menuFilter = document.getElementById("klint-filter");
+        this.lintTree = document.getElementById("klint-tree");
+        this.countLabel = document.getElementById("klint-count");
+        this.menuFilterType = document.getElementById("klint-filter-type");
+        this.textFilterPattern = document.getElementById("klint-filter-pattern")
 
         this.initValues();
     },
@@ -61,11 +62,11 @@ var gKlint = {
     initValues : function() {
         this.lintTreeView = new KlintTreeView();
 
-        this.oLintTree.view = this.lintTreeView;
+        this.lintTree.view = this.lintTreeView;
         this.lintTreeView.refresh();
     },
 
-    _fillLintTree : function (view) {
+    fillLintTree : function (view) {
         var items = null;
         var count = 0;
         var numErrs = 0;
@@ -102,18 +103,18 @@ var gKlint = {
             }
             this.lintTreeView.setResultsObj(items, count, view.__klintInfo__);
             this.lintTreeView.refresh();
-            this.oCount.value = CommonUtil.getFormattedMessage("error.count.label",
-                                                                [numErrs, numWarns]);
+            this.countLabel.value = CommonUtil.getFormattedMessage(
+                "error.count.label", [numErrs, numWarns]);
         }
         } catch (err) {
-            alert("_fillLintTree " + err);
+            alert("fillLintTree " + err);
         }
     },
 
     onDblClick : function(event) {
         try {
         if (event.button == 0) {
-            var view = this.oLintTree.view;
+            var view = this.lintTree.view;
             var selection = view.selection;
             if (selection.count) {
                 this.moveCursorToMessage(ko.views.manager.currentView,
@@ -149,12 +150,12 @@ var gKlint = {
         try {
         switch (topic) {
             case "current_view_changed":
-                this._updateFilterMenu(subject);
-                this._updateSortIndicator(subject);
-                this._fillLintTree(subject);
+                this.updateUI(subject);
+                this.updateSortIndicator(subject);
+                this.fillLintTree(subject);
                 break;
             case "current_view_check_status":
-                this._fillLintTree(ko.views.manager.currentView);
+                this.fillLintTree(ko.views.manager.currentView);
                 break;
             case "view_opened":
                 //var view = subject;
@@ -208,13 +209,13 @@ var gKlint = {
     onCurrentViewChanged : function(event) {
         var currView = event.originalTarget;
 
-        this._updateFilterMenu(currView);
-        this._updateSortIndicator(currView);
-        this._fillLintTree(currView);
+        this.updateUI(currView);
+        this.updateSortIndicator(currView);
+        this.fillLintTree(currView);
     },
 
     onCurrentViewCheckStatus : function(event) {
-        this._fillLintTree(ko.views.manager.currentView);
+        this.fillLintTree(ko.views.manager.currentView);
     },
 
     onCurrentViewOpened : function(event) {
@@ -241,7 +242,8 @@ var gKlint = {
     filterVisibleItems : function(what) {
         view = ko.views.manager.currentView;
         var klintInfo = this.getKlintInfo(view);
-        klintInfo.filter = what;
+        klintInfo.filterPattern = this.textFilterPattern.value;
+        klintInfo.filterType = what;
         this.lintTreeView.filterVisibleItems(klintInfo);
         this.lintTreeView.refresh();
     },
@@ -250,17 +252,17 @@ var gKlint = {
         var selectedColumn = event.target;
         view = ko.views.manager.currentView;
         this.getKlintInfo(view).changeSortColumn(selectedColumn.id);
-        this._updateSortIndicator(ko.views.manager.currentView);
+        this.updateSortIndicator(ko.views.manager.currentView);
         this.lintTreeView.sort(this.getKlintInfo(view).getCurrentSortInfo());
         this.lintTreeView.refresh();
     },
     
-    _updateSortIndicator : function(view) {
+    updateSortIndicator : function(view) {
         var selectedColumn = document.getElementById(
             this.getKlintInfo(view).currentSortColumnName);
         var sortInfo = this.getKlintInfo(view).getCurrentSortInfo();
         var sortDirection = sortInfo.isAscending ? "ascending" : "descending"
-        var cols = this.oLintTree.columns;
+        var cols = this.lintTree.columns;
 
         for (var i = 0; i < cols.count; i++) {
             var el = cols.getColumnAt(i).element;
@@ -275,32 +277,49 @@ var gKlint = {
         }
     },        
 
-    _updateFilterMenu : function (view) {
-        var filter = KlintTreeView.ALL;
+    updateUI : function (view) {
+        var filterType = KlintTreeView.ALL;
+        var filterText = "";
 
         if ("__klintInfo__" in view) {
-            filter = view.__klintInfo__.filter;
+            filterType = view.__klintInfo__.filterType;
+            filterText = view.__klintInfo__.filterPattern;
         }
 
-        switch (filter) {
+        switch (filterType) {
             case KlintTreeView.ALL:
-                this.menuFilter.selectedItem = document.getElementById("klint-filter-all");
+                this.menuFilterType.selectedItem = document.getElementById("klint-filter-all");
                 break;
             case KlintTreeView.ERROR:
-                this.menuFilter.selectedItem = document.getElementById("klint-filter-error");
+                this.menuFilterType.selectedItem = document.getElementById("klint-filter-error");
                 break;
             case KlintTreeView.WARNING:
-                this.menuFilter.selectedItem = document.getElementById("klint-filter-warning");
+                this.menuFilterType.selectedItem = document.getElementById("klint-filter-warning");
                 break;
             case KlintTreeView.INFO:
-                this.menuFilter.selectedItem = document.getElementById("klint-filter-info");
+                this.menuFilterType.selectedItem = document.getElementById("klint-filter-info");
                 break;
             case KlintTreeView.NONE:
-                this.menuFilter.selectedItem = document.getElementById("klint-filter-none");
+                this.menuFilterType.selectedItem = document.getElementById("klint-filter-none");
                 break;
             default:
-                this.menuFilter.selectedItem = document.getElementById("klint-filter-all");
+                this.menuFilterType.selectedItem = document.getElementById("klint-filter-all");
                 break;
+        }
+
+        this.textFilterPattern.value = filterText;
+    },
+    
+    onTextFilterInput : function(event) {
+        view = ko.views.manager.currentView;
+        var klintInfo = this.getKlintInfo(view);
+        this.filterVisibleItems(klintInfo.filterType);
+    },
+    
+    onTextFilterKeypress : function(event) {
+        if (event.keyCode == KeyEvent.DOM_VK_ESCAPE) {
+            event.target.value = "";
+            this.onTextFilterInput(event);
         }
     }
 };
