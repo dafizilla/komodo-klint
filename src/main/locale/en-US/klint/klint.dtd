@@ -1,5 +1,5 @@
-<!ENTITY klint.tab.title "Syntax checking status">
-<!ENTITY klint.open.tab.title "Syntax checking">
+<!ENTITY klint.tab.title "Syntax Checking Status">
+<!ENTITY klint.open.tab.title "Syntax Checking">
 <!ENTITY klint.refresh.label "Refresh">
 <!ENTITY klint.line.number.label "Line Number">
 <!ENTITY klint.message.text.label "Description">
@@ -10,3 +10,5 @@
 <!ENTITY klint.show.warnings.label "Warnings">
 <!ENTITY klint.show.infos.label "Info">
 <!ENTITY klint.show.hide.all.label "Hide All">
+
+<!ENTITY klint.filter.by.description.tooltiptext "Filter By Description">

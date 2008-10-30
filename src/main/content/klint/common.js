@@ -207,3 +207,7 @@ CommonUtil.clone = function(obj, shallow) {
     }
     return cloned;
 }
+
+CommonUtil.log = function(message) {
+    ko.logging.getLogger("klint").warn((new Date()) + ": " + message);
+}

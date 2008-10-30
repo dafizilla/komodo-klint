@@ -16,3 +16,7 @@
   padding-right: 4px;
   list-style-image: url("chrome://klint/skin/icon_check_info.png");
 }
+
+.klint-filter-pattern {
+  list-style-image: url("chrome://klint/skin/search.png");
+}

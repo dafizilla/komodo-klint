@@ -1,9 +1,9 @@
 <!DOCTYPE extension [
-<!ENTITY extension.version "1.1.1">
+<!ENTITY extension.version "1.2">
 ]>
 
 <extension name="klint">
-    <title-name>Klint</title-name>
+    <title-name>Dafizilla Klint</title-name>
     <uuid>klint@dafizilla.sourceforge.net</uuid>
     <version>&extension.version;</version>
     <description>Klint adds a message windows to KomodoEdit syntax checker</description>

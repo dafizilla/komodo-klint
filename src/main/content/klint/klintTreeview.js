@@ -127,8 +127,10 @@ KlintInfo.prototype = {
     
     isResultVisible : function(koILintResult) {
         if (koILintResult.severity & this.filterType) {
+            if (this._filterPattern.length == 0) {
+                return true;
+            }
             var descr = koILintResult.description.toLowerCase();
-            // if this._filterPattern is empty indexOf returns 0
             if (descr.indexOf(this._filterPattern) >= 0) {
                 return true;
             }
@@ -177,15 +179,16 @@ KlintTreeView.prototype = {
         this._resultsObj = resultsObj;
         this._count = count;
 
-        if (typeof(info) == "undefined") {
+        if (typeof(info) == "undefined" || info == null) {
             info = new KlintInfo();
         }
         this.filterVisibleItems(info);
     },
 
-    filterVisibleItems : function(info) {
+    filterVisibleItems : function(info, sortItems) {
         var currentCount = this._visibleItems.length;
         this._visibleItems = [];
+
         if (typeof sortItems == "undefined" || sortItems == null) {
             sortItems = true;
         }
@@ -198,7 +201,9 @@ KlintTreeView.prototype = {
                 }
             }
             // sort at every new filter, very inefficient
-            this.sort(info.getCurrentSortInfo());
+            if (sortItems) {
+                this.sort(info.getCurrentSortInfo());
+            }
         }
         var offsetCount = this._visibleItems.length - currentCount;
         this.treebox.rowCountChanged(this._visibleItems.length, offsetCount);
