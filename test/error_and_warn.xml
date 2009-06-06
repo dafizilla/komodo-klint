@@ -1,0 +1,11 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html a="">
+	
+	    filterVisibleItems : function(what) {
+        var currentCount = this._visibleItems.length;
+        this._visibleItems = [];
+        
+        for (var i = 0; i < this._count; i++) {
+            var result = this._resultsObj.value[i];
+
+	</html>
