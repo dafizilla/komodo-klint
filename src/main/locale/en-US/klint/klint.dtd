@@ -12,3 +12,4 @@
 <!ENTITY klint.show.hide.all.label "Hide All">
 
 <!ENTITY klint.filter.by.description.tooltiptext "Filter By Description">
+<!ENTITY klint.disable.syntax.checking.by.file.pattern.label "Disable syntax checking by file pattern">

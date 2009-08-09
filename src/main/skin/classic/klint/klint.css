@@ -20,3 +20,7 @@
 .klint-filter-pattern {
   list-style-image: url("chrome://klint/skin/search.png");
 }
+
+.button-klint-disable-syntax-checking {
+  list-style-image: url("chrome://klint/skin/remove.png");
+}

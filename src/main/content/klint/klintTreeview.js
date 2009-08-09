@@ -80,7 +80,7 @@ KlintInfo.prototype = {
     get filterType() {
         return this._filterType;
     },
-    
+
     set filterType(value) {
         if (typeof(value) == "undefined" || value == null) {
             this._filterType = KlintTreeView.ALL;
@@ -88,15 +88,15 @@ KlintInfo.prototype = {
             this._filterType = value;
         }
     },
-    
+
     get currentSortColumnName() {
         return this._currentSortColumnName;
     },
-    
+
     get filterPattern() {
         return this._filterPattern;
     },
-    
+
     set filterPattern(value) {
         if (typeof(value) == "undefined" || value == null) {
             this._filterPattern = "";
@@ -104,7 +104,7 @@ KlintInfo.prototype = {
             this._filterPattern = value.toLowerCase();
         }
     },
-    
+
     /**
      * Return true if column has been sorted ascending, false otherwise
      */
@@ -124,7 +124,7 @@ KlintInfo.prototype = {
     getCurrentSortInfo : function() {
         return this._sortInfo[this._currentSortColumnName];
     },
-    
+
     isResultVisible : function(koILintResult) {
         if (koILintResult.severity & this.filterType) {
             if (this._filterPattern.length == 0) {
@@ -170,9 +170,9 @@ KlintTreeView.props[KlintTreeView.WARNING] =
 
 // Messages
 KlintTreeView.messages = [];
-KlintTreeView.messages[KlintTreeView.INFO] = CommonUtil.getLocalizedMessage("info.label");
-KlintTreeView.messages[KlintTreeView.ERROR] = CommonUtil.getLocalizedMessage("error.label");
-KlintTreeView.messages[KlintTreeView.WARNING] = CommonUtil.getLocalizedMessage("warning.label");
+KlintTreeView.messages[KlintTreeView.INFO] = extensions.dafizilla.klint.commonUtils.getLocalizedMessage("info.label");
+KlintTreeView.messages[KlintTreeView.ERROR] = extensions.dafizilla.klint.commonUtils.getLocalizedMessage("error.label");
+KlintTreeView.messages[KlintTreeView.WARNING] = extensions.dafizilla.klint.commonUtils.getLocalizedMessage("warning.label");
 
 KlintTreeView.prototype = {
     setResultsObj : function(resultsObj, count, info) {

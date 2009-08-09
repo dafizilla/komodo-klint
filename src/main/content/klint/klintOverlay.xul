@@ -76,6 +76,10 @@
                                 oncommand="gKlint.filterVisibleItems(KlintTreeView.NONE)"/>
                         </menupopup>
                     </menulist>
+                    <button id="klint-disable-syntax-checking"
+                            class="button-klint-disable-syntax-checking button-toolbar-a"
+                            tooltiptext="&klint.disable.syntax.checking.by.file.pattern.label;"
+                            oncommand="gKlint.onOpenLintFiltersDialog();"/>
                     <button id="klint-refresh"
                             class="button-klint-refresh button-toolbar-a"
                             tooltiptext="&klint.refresh.label;"

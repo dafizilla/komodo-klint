@@ -34,180 +34,47 @@
 #
 # ***** END LICENSE BLOCK *****
 */
-CommonUtil.locale = Components.classes["@mozilla.org/intl/stringbundle;1"]
-    .getService(Components.interfaces.nsIStringBundleService)
-    .createBundle("chrome://klint/locale/klint.properties");
-
-function CommonUtil() {
-    return this;
+if (typeof(extensions) == 'undefined') {
+    var extensions = {};
 }
 
-CommonUtil.makeLocalFile = function(path, arrayAppendPaths) {
-    var file;
+if (typeof(extensions.dafizilla) == 'undefined') {
+    extensions.dafizilla = {};
+}
 
-    try {
-        file = path.QueryInterface(Components.interfaces.nsILocalFile);
-    } catch (err) {
-        file = Components.classes["@mozilla.org/file/local;1"]
-               .createInstance(Components.interfaces.nsILocalFile);
-        file.initWithPath(path);
+if (typeof(extensions.dafizilla.klint) == 'undefined') {
+    extensions.dafizilla.klint = {};
+}
+
+extensions.dafizilla.klint.commonUtils = {};
+
+(function() {
+    var locale = Components.classes["@mozilla.org/intl/stringbundle;1"]
+        .getService(Components.interfaces.nsIStringBundleService)
+        .createBundle("chrome://klint/locale/klint.properties");
+
+    this.getLocalizedMessage = function(msg) {
+        return locale.GetStringFromName(msg);
     }
 
-    if (arrayAppendPaths != null
-        && arrayAppendPaths != undefined
-        && arrayAppendPaths.length) {
-        for (var i = 0; i < arrayAppendPaths.length; i++) {
-            file.append(arrayAppendPaths[i]);
-        }
-    }
-    return file;
-}
-
-CommonUtil.getLocalizedMessage = function(msg) {
-    return CommonUtil.locale.GetStringFromName(msg);
-}
-
-CommonUtil.getFormattedMessage = function(msg, ar) {
-    return CommonUtil.locale.formatStringFromName(msg, ar, ar.length);
-}
-
-CommonUtil.makeFilePicker = function(win, title, mode, displayDirectory) {
-    const nsIFilePicker                 = Components.interfaces.nsIFilePicker;
-    const CONTRACTID_FILE_PICKER        = "@mozilla.org/filepicker;1";
-
-    if (mode == null || mode == undefined) {
-        mode = nsIFilePicker.modeOpen;
-    }
-    var fp = Components.classes[CONTRACTID_FILE_PICKER]
-                .createInstance(nsIFilePicker);
-    fp.init(win, title, mode);
-    if (displayDirectory) {
-        fp.displayDirectory = displayDirectory;
+    this.getFormattedMessage = function(msg, ar) {
+        return locale.formatStringFromName(msg, ar, ar.length);
     }
 
-    return fp;
-}
+    this.getObserverService = function () {
+        const CONTRACTID_OBSERVER = "@mozilla.org/observer-service;1";
+        const nsObserverService = Components.interfaces.nsIObserverService;
 
-CommonUtil.getProfileDir = function() {
-    return CommonUtil.getPrefDir("PrefD");
-}
-
-CommonUtil.getUserHome = function() {
-    return CommonUtil.getPrefDir("Home");
-}
-
-CommonUtil.getPrefDir = function(dir) {
-    const CONTRACTID_DIR = "@mozilla.org/file/directory_service;1";
-    const nsDir = Components.interfaces.nsIProperties;
-
-    var dirService = Components.classes[CONTRACTID_DIR].getService(nsDir);
-    return dirService.get(dir, Components.interfaces.nsILocalFile);
-}
-
-CommonUtil.makeFileURL = function(aFile) {
-    var theFile = CommonUtil.makeLocalFile(aFile);
-
-    var ioService = Components.classes["@mozilla.org/network/io-service;1"]
-                    .getService(Components.interfaces.nsIIOService);
-    return ioService.newFileURI(theFile);
-}
-
-
-CommonUtil.copyToClipboard = function(str) {
-    Components.classes["@mozilla.org/widget/clipboardhelper;1"]
-        .getService(Components.interfaces.nsIClipboardHelper)
-        .copyString(str);
-}
-
-CommonUtil.changeUriView = function(view, uri) {
-    var docSvc = Components
-        .classes["@activestate.com/koDocumentService;1"]
-        .getService(Components.interfaces.koIDocumentService);
-    var newDoc = docSvc.createDocumentFromURI(uri);
-    // Otherwise it's initially loaded as an empty document
-    newDoc.load();
-    view.document = newDoc;
-}
-
-CommonUtil.renameFile = function(uri, newName) {
-    var koFileEx = CommonUtil.makeIFileExFromURI(uri);
-    var oldPath = koFileEx.path;
-    var newPath;
-
-    if (koFileEx.isRemoteFile) {
-        var rcSvc = Components
-                    .classes["@activestate.com/koRemoteConnectionService;1"]
-                    .getService(Components.interfaces.koIRemoteConnectionService);
-        var conn = rcSvc.getConnectionUsingUri(uri);
-        var parent = conn.getParentPath(oldPath);
-        conn.rename(oldPath, parent + "/" + newName);
-        // replace uri leaf with newName
-        newPath = uri.replace(/\/[^\/]*$/, "/" + newName);
-    } else {
-        var oldLocalFile = CommonUtil.makeLocalFile(oldPath);
-        newPath = CommonUtil.makeLocalFile(oldLocalFile.parent, [newName]).path;
-        oldLocalFile.moveTo(null, newName);
+        return Components.classes[CONTRACTID_OBSERVER].getService(nsObserverService);
     }
 
-    return newPath;
-}
-
-CommonUtil.deleteFile = function(uri) {
-    var koFileEx = CommonUtil.makeIFileExFromURI(uri);
-    var path = koFileEx.path;
-
-    if (koFileEx.isRemoteFile) {
-        var rcSvc = Components
-                    .classes["@activestate.com/koRemoteConnectionService;1"]
-                    .getService(Components.interfaces.koIRemoteConnectionService);
-        var conn = rcSvc.getConnectionUsingUri(uri);
-        conn.removeFile(path);
-    } else {
-        CommonUtil.makeLocalFile(path).remove(false);
+    this.log = function(message) {
+        ko.logging.getLogger("klint").warn((new Date()) + ": " + message);
     }
-}
 
-CommonUtil.isRemotePath = function(ko, path) {
-    try {
-        ko.uriparse.localPathToURI(path);
-    } catch (err) {
-        return true;
+    this.debug = function(message) {
+        Components.classes["@mozilla.org/consoleservice;1"]
+            .getService(Components.interfaces.nsIConsoleService)
+                .logStringMessage(message);
     }
-    return false;
-}
-
-CommonUtil.getObserverService = function () {
-    const CONTRACTID_OBSERVER = "@mozilla.org/observer-service;1";
-    const nsObserverService = Components.interfaces.nsIObserverService;
-
-    return Components.classes[CONTRACTID_OBSERVER].getService(nsObserverService);
-}
-
-CommonUtil.makeIFileExFromURI = function (uri) {
-    var file = Components
-                    .classes["@activestate.com/koFileEx;1"]
-                    .createInstance(Components.interfaces.koIFileEx);
-    file.path = uri;
-
-    return file;
-}
-
-CommonUtil.clone = function(obj, shallow) {
-    if (obj == null || typeof(obj) != 'object') {
-        return obj;
-    }
-    var cloned = {};
-
-    for(var i in obj) {
-        if (shallow) {
-            cloned[i] = obj[i];
-        } else {
-            cloned[i] = CommonUtil.clone(obj[i], shallow);
-        }
-    }
-    return cloned;
-}
-
-CommonUtil.log = function(message) {
-    ko.logging.getLogger("klint").warn((new Date()) + ": " + message);
-}
+}).apply(extensions.dafizilla.klint.commonUtils);
