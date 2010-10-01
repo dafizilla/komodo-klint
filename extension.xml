@@ -1,9 +1,9 @@
 <!DOCTYPE extension [
-<!ENTITY extension.version "1.3">
+<!ENTITY extension.version "1.3.0.1">
 ]>
 
 <extension name="klint">
-    <title-name>Dafizilla Klint</title-name>
+    <title-name>Klint</title-name>
     <uuid>klint@dafizilla.sourceforge.net</uuid>
     <version>&extension.version;</version>
     <description>Klint adds a message windows to KomodoEdit syntax checker</description>
@@ -48,14 +48,14 @@
             <description>Komodo IDE</description>
             <id>{36E66FA0-F259-11D9-850E-000D935D3368}</id>
             <minVersion>4.2</minVersion>
-            <maxVersion>5.*</maxVersion>
+            <maxVersion>6.*</maxVersion>
         </application>
         
         <application>
             <description>Komodo Edit</description>
             <id>{b1042fb5-9e9c-11db-b107-000d935d3368}</id>
             <minVersion>4.0</minVersion>
-            <maxVersion>5.*</maxVersion>
+            <maxVersion>6.*</maxVersion>
         </application>
     </compatibility>
 
