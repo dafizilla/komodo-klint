@@ -27,6 +27,7 @@
         <menuitem id="show_klint_tab"
             oncommand="ko.uilayout.ensureTabShown('klint_tab', true)"
             label="&klint.tab.title;"
+            type="checkbox"
             />
     </menupopup>
 
