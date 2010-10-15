@@ -33,6 +33,7 @@
 
     <menupopup id="context_lint">
         <menuitem id="show_klint_tab"
+                  class="statusbar-label"
             oncommand="ko.uilayout.ensureTabShown('klint_tab', true)"
             label="&klint.open.tab.title;"
             />
