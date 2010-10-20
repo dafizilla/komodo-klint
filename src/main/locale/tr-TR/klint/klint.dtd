@@ -1,0 +1,12 @@
+<!ENTITY klint.tab.title "Söz Dizimi Kontrol Durumu">
+<!ENTITY klint.open.tab.title "Söz Dizimi Kontrol Ediliyor">
+<!ENTITY klint.refresh.label "Yenile">
+<!ENTITY klint.line.number.label "Satır Numarası">
+<!ENTITY klint.message.text.label "Tanım">
+<!ENTITY klint.message.type.label "Tip">
+<!ENTITY klint.show.all.label "Hepsini Göster">
+<!ENTITY klint.show.errors.label "Hatalar">
+<!ENTITY klint.show.warnings.label "Uyarılar">
+<!ENTITY klint.show.infos.label "Bilgi">
+<!ENTITY klint.show.hide.all.label "Hepsini Gizle">
+<!ENTITY klint.filter.by.description.tooltiptext "Tanıma Göre Filtreleme">

@@ -1,0 +1,12 @@
+<!ENTITY klint.tab.title "Стање провере синтаксе">
+<!ENTITY klint.open.tab.title "Проверавање синтаксе">
+<!ENTITY klint.refresh.label "Освежи">
+<!ENTITY klint.line.number.label "Линија">
+<!ENTITY klint.message.text.label "Опис">
+<!ENTITY klint.message.type.label "Тип">
+<!ENTITY klint.show.all.label "Прикажи све">
+<!ENTITY klint.show.errors.label "Грешке">
+<!ENTITY klint.show.warnings.label "Упозорења">
+<!ENTITY klint.show.infos.label "Информације">
+<!ENTITY klint.show.hide.all.label "Сакриј све">
+<!ENTITY klint.filter.by.description.tooltiptext "Филтрирње по опису">

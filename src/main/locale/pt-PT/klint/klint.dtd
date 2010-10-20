@@ -1,0 +1,12 @@
+<!ENTITY klint.tab.title "Estado da Verificação de Sintaxe">
+<!ENTITY klint.open.tab.title "Verificação de Sintaxe">
+<!ENTITY klint.refresh.label "Actualizar">
+<!ENTITY klint.line.number.label "Número da Linha">
+<!ENTITY klint.message.text.label "Descrição">
+<!ENTITY klint.message.type.label "Tipo">
+<!ENTITY klint.show.all.label "Mostrar todos">
+<!ENTITY klint.show.errors.label "Erros">
+<!ENTITY klint.show.warnings.label "Avisos">
+<!ENTITY klint.show.infos.label "Informação">
+<!ENTITY klint.show.hide.all.label "Esconder todos">
+<!ENTITY klint.filter.by.description.tooltiptext "Filtrar por descrição">

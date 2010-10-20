@@ -1,0 +1,12 @@
+<!ENTITY klint.tab.title "Status sprawdzania składni">
+<!ENTITY klint.open.tab.title "Sprawdzanie składni">
+<!ENTITY klint.refresh.label "Odśwież">
+<!ENTITY klint.line.number.label "Numer linii">
+<!ENTITY klint.message.text.label "Opis">
+<!ENTITY klint.message.type.label "Typ">
+<!ENTITY klint.show.all.label "Wyświetl wszystkie">
+<!ENTITY klint.show.errors.label "Błędy">
+<!ENTITY klint.show.warnings.label "Ostrzeżenia">
+<!ENTITY klint.show.infos.label "Wiadomości">
+<!ENTITY klint.show.hide.all.label "Ukryj wszystkie">
+<!ENTITY klint.filter.by.description.tooltiptext "Filtruj według opisu">
